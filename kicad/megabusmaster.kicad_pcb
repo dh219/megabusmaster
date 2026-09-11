@@ -114,7 +114,7 @@
 			(mirror no)
 			(drillshape 0)
 			(scaleselection 1)
-			(outputdirectory "preview")
+			(outputdirectory "mbm_0.1")
 		)
 	)
 	(net 0 "")
@@ -458,6 +458,7 @@
 		(property "Reference" "H4"
 			(at 0 -4.15 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "d7f5adaf-db19-440b-87bf-e41baccc9e4f")
 			(effects
 				(font
@@ -7065,6 +7066,7 @@
 		(property "Reference" "H2"
 			(at 0 -4.15 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "cbeacd6f-e3ea-40f7-8b2a-ce1c970009f2")
 			(effects
 				(font
@@ -8053,7 +8055,8 @@
 			(uuid "86c56edd-8780-4827-9d41-74d9f589db56")
 		)
 		(embedded_fonts no)
-		(model "${KICAD9_3DMODEL_DIR}/Package_DIP.3dshapes/DIP-64_W22.86mm.step"
+		(model "${KICAD9_3DMODEL_DIR}/Package_DIP.3dshapes/DIP-64_W22.86mm_Socket.wrl"
+			(hide yes)
 			(offset
 				(xyz 0 0 0)
 			)
@@ -9925,6 +9928,7 @@
 		(property "Reference" "H1"
 			(at 0 -4.15 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "7c809834-c94a-4b30-b743-15e13c53b376")
 			(effects
 				(font
@@ -12998,6 +13002,7 @@
 		(property "Reference" "H3"
 			(at 0 -4.15 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "21e44c22-1c56-41cd-bf58-306fbedfa75a")
 			(effects
 				(font
@@ -15141,24 +15146,34 @@
 		)
 	)
 	(gr_line
-		(start 29.21 160.02)
-		(end 29.21 57.15)
+		(start 56.515 148.59)
+		(end 56.515 151.13)
 		(stroke
 			(width 0.1)
 			(type default)
 		)
-		(layer "Dwgs.User")
-		(uuid "ecb471a6-d67b-41a6-bf01-4c210f5d2fb7")
+		(layer "F.SilkS")
+		(uuid "3827ffe2-8a47-47b3-ab38-5c6d2babc041")
 	)
 	(gr_line
-		(start 29.21 160.02)
-		(end 160.02 160.02)
+		(start 56.515 152.4)
+		(end 56.515 154.94)
 		(stroke
 			(width 0.1)
 			(type default)
 		)
-		(layer "Dwgs.User")
-		(uuid "6a561fcf-2754-431d-8c0b-c0372d507a8a")
+		(layer "F.SilkS")
+		(uuid "50c448bc-4ffc-46d2-b1f3-d893236c9462")
+	)
+	(gr_line
+		(start 56.515 151.13)
+		(end 56.515 151.13)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "bee94123-e25f-49ad-8544-7938470206de")
 	)
 	(gr_line
 		(start 152.4 57.15)
@@ -15171,6 +15186,16 @@
 		(uuid "655c0d82-a572-412d-9647-8f69dfc14a0b")
 	)
 	(gr_line
+		(start 29.21 160.02)
+		(end 160.02 160.02)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "Dwgs.User")
+		(uuid "6a561fcf-2754-431d-8c0b-c0372d507a8a")
+	)
+	(gr_line
 		(start 152.4 144.78)
 		(end 152.4 26.67)
 		(stroke
@@ -15179,6 +15204,16 @@
 		)
 		(layer "Dwgs.User")
 		(uuid "dd0dc059-e8e1-4217-b20d-322ca7932fa1")
+	)
+	(gr_line
+		(start 29.21 160.02)
+		(end 29.21 57.15)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "Dwgs.User")
+		(uuid "ecb471a6-d67b-41a6-bf01-4c210f5d2fb7")
 	)
 	(gr_rect
 		(start 25.4 53.34)
@@ -15190,19 +15225,6 @@
 		(fill no)
 		(layer "Edge.Cuts")
 		(uuid "73bb07ba-a738-4dc2-a65f-49cf562f5638")
-	)
-	(gr_text "PULLED TO 5V (bus)"
-		(at 37.465 75.565 90)
-		(layer "F.SilkS")
-		(uuid "f81efe21-c308-4d53-9e45-70985a53ea1b")
-		(effects
-			(font
-				(size 1 0.762)
-				(thickness 0.1524)
-				(bold yes)
-			)
-			(justify left bottom)
-		)
 	)
 	(gr_text "12V GND GND GND 5V 5V"
 		(at 155.575 135.89 90)
@@ -15230,6 +15252,32 @@
 			(justify right)
 		)
 	)
+	(gr_text "IPL1 IPL2"
+		(at 48.34 162.78 0)
+		(layer "F.SilkS")
+		(uuid "3b8a0f5c-611b-4169-8e92-070fddad8013")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.2)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
+	(gr_text "CPLD-BUFFERED CLOCK\n\nMOTHERBOARD CLOCK"
+		(at 56.81 154.115 0)
+		(layer "F.SilkS")
+		(uuid "66505edf-2b88-49aa-8fa0-59a4dd19192c")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.2)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
+	)
 	(gr_text "RESET_I\nHALT_I\nBR_I\nBGK_I\nBG_I\nBG_MB\nBGK_MB\nBR_MB\nHALT_MB\nRESET_MB"
 		(at 45.085 97.79 0)
 		(layer "F.SilkS")
@@ -15243,14 +15291,15 @@
 			(justify left top)
 		)
 	)
-	(gr_text "DO SILKSCREEN"
-		(at 80.01 125.095 0)
-		(layer "User.4")
-		(uuid "0ed0d44a-3c83-4e3e-a167-7c48500d0a34")
+	(gr_text "PULLED TO 5V (bus)"
+		(at 37.465 75.565 90)
+		(layer "F.SilkS")
+		(uuid "f81efe21-c308-4d53-9e45-70985a53ea1b")
 		(effects
 			(font
-				(size 3.048 3.048)
-				(thickness 0.15)
+				(size 1 0.762)
+				(thickness 0.1524)
+				(bold yes)
 			)
 			(justify left bottom)
 		)
@@ -22128,7 +22177,7 @@
 				(xy 144.829394 125.414855) (xy 144.920606 125.467516) (xy 145.022339 125.494775) (xy 145.028553 125.494775)
 				(xy 144.349076 126.174249) (xy 144.39365 126.206634) (xy 144.575968 126.29953) (xy 144.770582 126.362765)
 				(xy 144.972683 126.394775) (xy 145.177317 126.394775) (xy 145.379417 126.362765) (xy 145.574031 126.29953)
-				(xy 145.756349 126.206634) (xy 145.800922 126.174249) (xy 145.121447 125.494775) (xy 145.127661 125.494775)
+				(xy 145.756349 126.206634) (xy 145.800921 126.174249) (xy 145.121447 125.494775) (xy 145.127661 125.494775)
 				(xy 145.229394 125.467516) (xy 145.320606 125.414855) (xy 145.39508 125.340381) (xy 145.447741 125.249169)
 				(xy 145.475 125.147436) (xy 145.475 125.141222) (xy 146.154473 125.820696) (xy 146.19228 125.817721)
 				(xy 146.260658 125.832085) (xy 146.310415 125.881136) (xy 146.319714 125.902331) (xy 146.340186 125.964109)

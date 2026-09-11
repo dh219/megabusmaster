@@ -89,16 +89,16 @@
       9
     ],
     "col_widths": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10
     ],
     "custom_group_rules": [],
     "expanded_rows": [],
@@ -114,32 +114,7 @@
   },
   "open_jobsets": [],
   "project": {
-    "files": [
-      {
-        "name": "megabusmaster.kicad_sch",
-        "open": false,
-        "window": {
-          "display": 0,
-          "maximized": false,
-          "pos_x": 117,
-          "pos_y": 41,
-          "size_x": 1226,
-          "size_y": 785
-        }
-      },
-      {
-        "name": "megabusmaster.kicad_pcb",
-        "open": false,
-        "window": {
-          "display": 0,
-          "maximized": false,
-          "pos_x": 85,
-          "pos_y": 17,
-          "size_x": 1358,
-          "size_y": 870
-        }
-      }
-    ]
+    "files": []
   },
   "schematic": {
     "selection_filter": {
