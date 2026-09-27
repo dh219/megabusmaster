@@ -1,0 +1,23 @@
+
+#Created by Constraints Editor (xc9572xl-vq44-10) - 2026/09/22
+NET "CLK8" TNM_NET = CLK8;
+TIMESPEC TS_CLK8 = PERIOD "CLK8" 62.5 ns HIGH 50%;
+
+
+NET "RESET_I" LOC = "P39" ;
+
+NET "CLK8"  LOC = "P44"  ; 
+NET "CLK8_O"  LOC = "P43"  ; 
+
+NET "RESET_MB" LOC = "P29" ;
+NET "HALT_MB" LOC = "P30" ;
+NET "BR_MB" LOC = "P31" ;
+NET "BGACK_MB" LOC = "P32" ;
+NET "BG_MB" LOC = "P33" ;
+NET "BG_I" LOC = "P34" ;
+NET "BGACK_I" LOC = "P36" ;
+NET "BR_I" LOC = "P37" ;
+NET "HALT_I" LOC = "P38" ;
+
+
+NET "AS" LOC = "P1" ;
