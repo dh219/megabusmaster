@@ -13,6 +13,8 @@ module test;
 	wire CLK8_O;
 
   wire HALT_I;
+  pullup( HALT_I );
+
   wire BR_I;
   wire BGACK_I;
 
@@ -22,20 +24,21 @@ module test;
   reg BR_MB_val;
   reg BR_MB_en;
   assign BR_MB = BR_MB_en ? BR_MB_val : 1'bz;
-  assign BR_MB_read = BR_MB_en ? BR_MB_val : BR_MB;
+  wire BR_MB_read = BR_MB_en ? BR_MB_val : BR_MB;
 
   wire BGACK_MB;
   pullup( BGACK_MB );
   reg BGACK_MB_val;
   reg BGACK_MB_en;
   assign BGACK_MB = BGACK_MB_en ? BGACK_MB_val : 1'bz;
+  wire BGACK_MB_read = BGACK_MB_en ? BGACK_MB_val : BGACK_MB;
 
   wire HALT_MB;  
   pullup( HALT_MB );
   reg HALT_MB_val;
   reg HALT_MB_en;
   assign HALT_MB = HALT_MB_en ? HALT_MB_val : 1'bz;
-  assign HALT_MB_read = HALT_MB_en ? HALT_MB_val : HALT_MB;
+  wire HALT_MB_read = HALT_MB_en ? HALT_MB_val : HALT_MB;
 
 
 	// Instantiate the Unit Under Test (UUT)
@@ -75,7 +78,7 @@ module test;
     BGACK_MB_en = 1'b0;
 
     HALT_MB_val = 1'b0;
-    HALT_MB_en = 1'b0;
+    HALT_MB_en = 1'b1;
   
     BG_I = 1;
     BG_MB = 1;
@@ -87,6 +90,7 @@ module test;
 		// Add stimulus here
     RESET_MB = 1;
     RESET_I = 1;
+    HALT_MB_en = 1'b0;
 
     #400;
     BG_MB = 0;
@@ -112,12 +116,26 @@ module test;
 
     #1250;
     BGACK_MB_en  = 1'b0;
+    #400;
+    BG_MB = 0;
+
+    #400;
+    BG_MB = 1;
+
+    #450;
+    RESET_MB = 0;
+    HALT_MB_en = 1'b1;
+    HALT_MB_val = 1'b0;
+
+    #600;
+    RESET_MB = 1;
+    HALT_MB_en = 1'b0;
 
 	end
 
 //	initial #447 SWITCH=0;
 	
-	initial #5000 $finish;
+	initial #7000 $finish;
 
 
 	always #62 CLK8 = ~CLK8;

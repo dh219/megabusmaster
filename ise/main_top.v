@@ -3,23 +3,23 @@
 // main_top.v - Main module for the system
 
 module main_top (
-  input CLK8,
- 
-  input BG_I,
-  input BG_MB,
- 
-  input RESET_I,
-  input RESET_MB,
-  input AS,
+	input CLK8,
 
-  inout BR_MB,
-  inout BGACK_MB,
-  inout HALT_MB,
+	input BG_I,
+	input BG_MB,
 
-  output CLK8_O,
-  output HALT_I,
-  output BR_I,
-  output BGACK_I
+	input RESET_I,
+	input RESET_MB,
+	input AS,
+
+	inout BR_MB,
+	inout BGACK_MB,
+	inout HALT_MB,
+
+	output CLK8_O,
+	output HALT_I,
+	output BR_I,
+	output BGACK_I
 );
 
 	reg [3:0] state = 4'd0;
@@ -31,12 +31,12 @@ module main_top (
 	reg bgack_mb_int = 1'b1;
 
 
-	reg [7:0] BR_MB_CNT; // delay for BR_MB so we wait a certain amount of time before trying to reclaim bus
+	reg [3:0] BR_MB_D; // delay for BR_MB so we wait a certain amount of time before trying to reclaim bus
 	always @( posedge CLK8 ) begin
 		if( !BR_MB )
-			BR_MB_CNT <= 'd0;
+			BR_MB_D <= 'b1111;
 		else
-			BR_MB_CNT <= BR_MB_CNT + 'd1;
+			BR_MB_D <= { BR_MB_D[2:0], 1'b1 };
 	end
 
 
@@ -60,7 +60,7 @@ module main_top (
 				 bgack_mb_int <= 1'b1;
 
 				 if( // BR_MB
-				 ( BR_MB_CNT[7] ) && BGACK_MB && BG_MB ) begin
+				 ( BR_MB_D[1] ) && BGACK_MB && BG_MB ) begin
 					state <= 4'd1; // If no bus arb in play for a number of counts
 				 end
 			  end
@@ -127,11 +127,10 @@ module main_top (
 		end
 	end
 
-	assign CLK8_O = CLK8;
+	assign CLK8_O = ~(~CLK8);
 
 	assign HALT_I = RESET_MB ? 1'bz : HALT_MB;
 	assign HALT_MB = ( RESET_MB ? ( ( halt_mb_int === 1'bz ) ? 1'bz : halt_mb_int ) : 1'bz );
-	//  assign BR_I = ( br_i_int === 1'bz ) ? 1'bz : br_i_int;
 	assign BR_I = (state == 'd4) ? BR_MB : 1'b1;
 	assign BR_MB = br_mb_int ? 1'bz : 1'b0;
 	assign BGACK_I = ( bgack_i_int === 1'bz ) ? 1'bz : bgack_i_int;
