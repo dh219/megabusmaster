@@ -1,36 +1,22 @@
 GAL16V8
-Motorola VPA/VMA/DTACK Generator
+VPA VMA DTACK Generator
 
-Clock    E      1
-Input    FC0    2
-Input    FC1    3
-Input    VPA    4
-Input    VPA_MB 5
+CLK FC0  FC1  VPA  P5   P6   P7   P8   P9   GND
+OE  P12  P13  P14  P15  P16  VPAOUT  DTACK  VMA  VCC
 
-Output   VPA_OUT 16
-Output   DTACK   17
-Output   VMA     18
-Output   NC      19
+; VPA_OUT is purely combinational.
+; It uses De Morgan's law to convert the equation into an OR form,
+; which is more efficient for the GAL's AND-OR array.
+; Original equation: VPA_OUT = NOT( NOT VPA AND FC1 AND FC0 )
+VPAOUT = VPA + /FC1 + /FC0
 
-; --- Registered / combinational mode ---
-; Pin 1 = CLK, pins 2-9 inputs, pins 11-19 outputs
+; VMA is VPA delayed by one clock cycle.
+; The '.R' operator denotes a registered (clocked) output.
+VMA.R = VPA
 
-EQUATIONS
+; DTACK is VPA delayed by two clock cycles.
+; Chaining the registers like this achieves the two-cycle delay
+; using only the available macrocells on the GAL16V8.
+DTACK.R = VMA
 
-; VPA_OUT is purely combinational:
-;   VPA_OUT = NOT( NOT VPA_MB AND FC1 AND FC0 )
-;           = VPA_MB OR NOT FC1 OR NOT FC0
-VPA_OUT = VPA_MB # /FC1 # /FC0
-
-; VMA is VPA delayed one clock
-VMA = VPA
-VMA.CLK = E
-
-; DTACK is VPA delayed two clocks (two-stage shift register)
-DTACK = VMA
-DTACK.CLK = E
-
-; Unused output
-NC = 'b'0
-
-; Fuse / polarity defaults
+DESCRIPTION
