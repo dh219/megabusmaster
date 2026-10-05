@@ -1,0 +1,36 @@
+GAL16V8
+Motorola VPA/VMA/DTACK Generator
+
+Clock    E      1
+Input    FC0    2
+Input    FC1    3
+Input    VPA    4
+Input    VPA_MB 5
+
+Output   VPA_OUT 16
+Output   DTACK   17
+Output   VMA     18
+Output   NC      19
+
+; --- Registered / combinational mode ---
+; Pin 1 = CLK, pins 2-9 inputs, pins 11-19 outputs
+
+EQUATIONS
+
+; VPA_OUT is purely combinational:
+;   VPA_OUT = NOT( NOT VPA_MB AND FC1 AND FC0 )
+;           = VPA_MB OR NOT FC1 OR NOT FC0
+VPA_OUT = VPA_MB # /FC1 # /FC0
+
+; VMA is VPA delayed one clock
+VMA = VPA
+VMA.CLK = E
+
+; DTACK is VPA delayed two clocks (two-stage shift register)
+DTACK = VMA
+DTACK.CLK = E
+
+; Unused output
+NC = 'b'0
+
+; Fuse / polarity defaults
