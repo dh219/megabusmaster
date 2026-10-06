@@ -1,22 +1,23 @@
 GAL16V8
-VPA VMA DTACK Generator
+Partial VPA passthrough (for autovectored interrupts) from motherboard to external CPU & async DTACK generator (to external CPU) to replace 6800 bus accesses. CLK is the motherboard E line.
 
-CLK FC0  FC1  VPA  P5   P6   P7   P8   P9   GND
-OE  P12  P13  P14  P15  P16  VPAOUT  DTACK  VMA  VCC
+CLK FC0  FC1  VPAmb P5   P6   P7       P8    P9       GND
+OE  P12  P13  P14   P15  P16  VPAext   DTACKext VMAmb VCC
 
-; VPA_OUT is purely combinational.
-; It uses De Morgan's law to convert the equation into an OR form,
-; which is more efficient for the GAL's AND-OR array.
-; Original equation: VPA_OUT = NOT( NOT VPA AND FC1 AND FC0 )
-VPAOUT = VPA + /FC1 + /FC0
+; VPAext is purely combinational.
+; Original equation: VPAext = NOT( NOT VPAmb AND FC1 AND FC0 )
+; VPA to the external CPU should only be passed if an interrupt acknowledge cycle (ie. FC0 and FC1 are high)
+VPAext = VPAmb + /FC1 + /FC0
 
-; VMA is VPA delayed by one clock cycle.
+; VMA is VPA delayed by one E clock cycle.
 ; The '.R' operator denotes a registered (clocked) output.
-VMA.R = VPA
+; Activate VMA to the motherboard on the first positive edge of the E clock after receiving a VPA signal.
+; No harm to activate VMA even if it's an interrupt acknowledge cycle. This wouldn't happen usually, however.
+VMAmb.R = VPAmb
 
-; DTACK is VPA delayed by two clock cycles.
+; DTACK is VPA delayed by two E clock cycles.
 ; Chaining the registers like this achieves the two-cycle delay
-; using only the available macrocells on the GAL16V8.
-DTACK.R = VMA
+; Time DTACK such that the external 68000 can latch data from the ACIAs when they are driving the bus for what they perceive to be a normal synchronous 6800 cycle.
+DTACKext.R = VMAmb
 
 DESCRIPTION
