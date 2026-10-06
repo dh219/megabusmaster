@@ -1,7 +1,7 @@
 GAL16V8
-Partial VPA passthrough (for autovectored interrupts) from motherboard to external CPU & async DTACK generator (to external CPU) to replace 6800 bus accesses. CLK is the motherboard E line.
+Partial VPA passthrough (for autovectored interrupts) from motherboard to external CPU & async DTACK generator (to external CPU) to replace 6800 bus accesses. CLK is the motherboard 8MHz line.
 
-CLK FC0  FC1  VPAmb P5   P6   P7       P8    P9       GND
+CLK FC0  FC1  VPAmb AS   P6   P7       P8    P9       GND
 OE  P12  P13  P14   P15  P16  VPAext   DTACKext VMAmb VCC
 
 ; VPAext is purely combinational.
@@ -9,15 +9,15 @@ OE  P12  P13  P14   P15  P16  VPAext   DTACKext VMAmb VCC
 ; VPA to the external CPU should only be passed if an interrupt acknowledge cycle (ie. FC0 and FC1 are high)
 VPAext = VPAmb + /FC1 + /FC0
 
-; VMA is VPA delayed by one E clock cycle.
+; VMA is VPA delayed by one 8MHz clock cycle.
 ; The '.R' operator denotes a registered (clocked) output.
 ; Activate VMA to the motherboard on the first positive edge of the E clock after receiving a VPA signal.
 ; No harm to activate VMA even if it's an interrupt acknowledge cycle. This wouldn't happen usually, however.
-VMAmb.R = VPAmb
+VMAmb.R = VPAmb + AS
 
-; DTACK is VPA delayed by two E clock cycles.
+; DTACK is VPA delayed by two clock cycles.
 ; Chaining the registers like this achieves the two-cycle delay
 ; Time DTACK such that the external 68000 can latch data from the ACIAs when they are driving the bus for what they perceive to be a normal synchronous 6800 cycle.
-DTACKext.R = VMAmb
+DTACKext.R = VMAmb + AS
 
 DESCRIPTION
