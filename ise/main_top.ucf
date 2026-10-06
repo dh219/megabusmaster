@@ -21,3 +21,12 @@ NET "HALT_I" LOC = "P38" ;
 
 
 NET "AS" LOC = "P1" ;
+
+NET "FC0" LOC = "P7" ;
+NET "FC1" LOC = "P8" ;
+NET "E" LOC = "P19" ;
+NET "VPA_MB" LOC = "P22" ;
+NET "VMA_MB" LOC = "P14" ;
+NET "DTACK" LOC = "P12" ;
+NET "VPA_EXT" LOC = "P3" ;
+

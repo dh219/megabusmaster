@@ -19,7 +19,16 @@ module main_top (
 	output CLK8_O,
 	output HALT_I,
 	output BR_I,
-	output BGACK_I
+	output BGACK_I,
+	
+	
+	input FC0,
+	input FC1,
+	input E,
+	input VPA_MB,
+	output VMA_MB,
+	output DTACK,
+	output VPA_EXT
 );
 
 	reg [3:0] state = 4'd0;
@@ -129,7 +138,6 @@ module main_top (
 
 	assign CLK8_O = ~CLK8;
 
-//	assign HALT_I = RESET_MB ? 1'bz : HALT_MB;
 	assign HALT_I = RESET_MB ? ( state == 'd4 ? 1'bz : 1'b0 ) : HALT_MB;
 	assign HALT_MB = ( RESET_MB ? ( ( halt_mb_int === 1'bz ) ? 1'bz : halt_mb_int ) : 1'bz );
 	assign BR_I = (state == 'd4) ? BR_MB : 1'b1;
@@ -137,13 +145,19 @@ module main_top (
 	assign BGACK_I = ( bgack_i_int === 1'bz ) ? 1'bz : bgack_i_int;
 	assign BGACK_MB = bgack_mb_int ? 1'bz : 1'b0;
 
-/*
-	assign HALT_I = 1'bz;
-	assign HALT_MB = 1'bz;
-	assign BR_I = 1'bz;
-	assign BR_MB = 1'bz;
-	assign BGACK_I = 1'bz;
-	assign BGACK_MB = 1'bz;
-*/
+// VPA hack section
+
+//	wire IACK = FC0 && FC1 && !AS;
+	wire ACIA = !VPA_MB && !FC1 && FC0;
+
+	wire [2:0] acia_dtack;
+	FDCP ff_acia_dtack1( .D( ACIA ), .C( E ), .CLR( AS ), .PRE( 1'b0 ), .Q( acia_dtack[0]) );
+	FDCP ff_acia_dtack2( .D( acia_dtack[0] ), .C( E ), .CLR( AS ), .PRE( 1'b0 ), .Q( acia_dtack[1]) );
+	FDCP ff_acia_dtack3( .D( acia_dtack[1] ), .C( E ), .CLR( AS ), .PRE( 1'b0 ), .Q( acia_dtack[2]) );
+	
+	assign VPA_EXT = ( FC0 & FC1 ) ? VPA_MB : 1'b1;
+	assign VMA_MB = acia_dtack[0] ? 1'b0 : 1'bz;
+	assign DTACK = acia_dtack[1] ? 1'b0 : 1'bz; 
+
 
 endmodule
