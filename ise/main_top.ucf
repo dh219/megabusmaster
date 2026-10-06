@@ -6,8 +6,8 @@ TIMESPEC TS_CLK8 = PERIOD "CLK8" 62.5 ns HIGH 50%;
 
 NET "RESET_I" LOC = "P39" ;
 
-NET "CLK8"  LOC = "P44"  ; 
-NET "CLK8_O"  LOC = "P43"  ; 
+NET "CLK8"  LOC = "P44" | BUFG=CLK ; 
+NET "CLK8_O"  LOC = "P43" ; 
 
 NET "RESET_MB" LOC = "P29" ;
 NET "HALT_MB" LOC = "P30" ;

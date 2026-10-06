@@ -127,9 +127,10 @@ module main_top (
 		end
 	end
 
-	assign CLK8_O = ~(~CLK8);
+	assign CLK8_O = ~CLK8;
 
-	assign HALT_I = RESET_MB ? 1'bz : HALT_MB;
+//	assign HALT_I = RESET_MB ? 1'bz : HALT_MB;
+	assign HALT_I = RESET_MB ? ( state == 'd4 ? 1'bz : 1'b0 ) : HALT_MB;
 	assign HALT_MB = ( RESET_MB ? ( ( halt_mb_int === 1'bz ) ? 1'bz : halt_mb_int ) : 1'bz );
 	assign BR_I = (state == 'd4) ? BR_MB : 1'b1;
 	assign BR_MB = br_mb_int ? 1'bz : 1'b0;
