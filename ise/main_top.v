@@ -63,10 +63,11 @@ module main_top (
 			case(state)
 			  4'd0: begin // BUS NOT OURS
 				 halt_mb_int <= 1'b0;
-				 br_i_int <= 1'b0;
 				 br_mb_int <= 1'b1;
-				 bgack_i_int <= 1'b0;
 				 bgack_mb_int <= 1'b1;
+
+				 br_i_int <= 1'b0;
+				 bgack_i_int <= 1'b0;
 
 				 if( // BR_MB
 				 ( BR_MB_D[1] ) && BGACK_MB && BG_MB ) begin
@@ -76,62 +77,63 @@ module main_top (
 			
 			  4'd1: begin // START REQUEST, WAIT BG
 				 halt_mb_int <= 1'b0;
-				 br_i_int <= 1'b0;
 				 br_mb_int <= 1'b0;
-				 bgack_i_int <= 1'b0;
 				 bgack_mb_int <= 1'b1;
+
+				 br_i_int <= 1'b0;
+				 bgack_i_int <= 1'b0;
 
 				 if( !BG_MB && BGACK_MB && AS ) begin
 					state <= 4'd2; // If bus grant, move to accept state
 					br_mb_int <= 1'b1;
 					bgack_mb_int <= 1'b0;
-
 				 end
 			  end
 			  4'd2: begin // BUS IS MINE, DEAD CYCLE
 					halt_mb_int <= 1'b0;
-					br_i_int <= 1'b1;
 					br_mb_int <= 1'b1;
-					bgack_i_int <= 1'b1;
 					bgack_mb_int <= 1'b0;
+
+					br_i_int <= 1'b1;
+					bgack_i_int <= 1'b1;
 
 					state <= 'd3;
 			  end		  
 			  4'd3: begin // BUS IS MINE, DEAD CYCLE
 					halt_mb_int <= 1'b0;
+					br_mb_int <= 1'b1;
+					bgack_mb_int <= 1'b0;
+
+					br_i_int <= 1'b1;
+					bgack_i_int <= 1'b1;
+
+					state <= 'd4;
+			  end	
+			  4'd4: begin // BUS IS MINE, AWAIT BGI
+					halt_mb_int <= 1'b0;
 					br_i_int <= 1'b1;
 					br_mb_int <= 1'b1;
 					bgack_i_int <= 1'b1;
 					bgack_mb_int <= 1'b0;
 
-					state <= 'd4;
-			  end	
-			  4'd4: begin // BUS IS MINE, AWAIT BGI
-				 halt_mb_int <= 1'b0;
-				 br_i_int <= 1'b1;
-				 br_mb_int <= 1'b1;
-				 bgack_i_int <= 1'b1;
-				 bgack_mb_int <= 1'b0;
-
 					if( AS && !BG_I ) begin
-						state <= 'd6;
+						state <= 'd5;
 						bgack_mb_int <= 1'b1;
 						bgack_i_int <= 1'b0;
 					end
-			  end		
-			  
-			  4'd6: begin // RELINQUISH, AWAIT BG_MB
-				 halt_mb_int <= 1'b0;
-				 br_i_int <= 1'b0;
-				 br_mb_int <= 1'b1;
-				 bgack_i_int <= 1'b0;
-				 bgack_mb_int <= 1'b1;
+			  end					  
+			  4'd5: begin // RELINQUISH, AWAIT BG_MB
+					halt_mb_int <= 1'b0;
+					br_mb_int <= 1'b1;
+					bgack_mb_int <= 1'b1;
 
-				 if( !BG_MB || ( BR_MB && BG_MB && BGACK_MB ) ) begin
-					state <= 4'd0; // Back to initial state
-				 end
+					br_i_int <= 1'b0;
+					bgack_i_int <= 1'b0;
+
+					if( !BG_MB || ( BR_MB && BG_MB && BGACK_MB ) ) begin
+						state <= 4'd0; // Back to initial state
+					end
 			  end
-			  
 			endcase
 		end
 	end
@@ -140,7 +142,8 @@ module main_top (
 
 	assign HALT_I = RESET_MB ? ( state == 'd4 ? 1'bz : 1'b0 ) : HALT_MB;
 	assign HALT_MB = ( !RESET_MB || halt_mb_int ? 1'bz : 1'b0 );
-	assign BR_I = (state == 'd4) ? BR_MB : 1'b1;
+//	assign BR_I = (state == 'd4) ? BR_MB : 1'b1;
+	assign BR_I = br_i_int ? BR_MB : 1'b0;
 	assign BR_MB = br_mb_int ? 1'bz : 1'b0;
 	assign BGACK_I = bgack_i_int ;// ? 1'bz : 1'b0;
 	assign BGACK_MB = bgack_mb_int ? 1'bz : 1'b0;
@@ -148,12 +151,13 @@ module main_top (
 // VPA hack section
 
 //	wire IACK = FC0 && FC1 && !AS;
-	wire ACIA = !VPA_MB && !FC1 && FC0;
+	wire ACIA = !VPA_MB && !(FC1 && FC0);
 
 	wire [2:0] acia_dtack;
-	FDCP ff_acia_dtack1( .D( ACIA ), .C( E ), .CLR( AS ), .PRE( 1'b0 ), .Q( acia_dtack[0]) );
-	FDCP ff_acia_dtack2( .D( acia_dtack[0] ), .C( E ), .CLR( AS ), .PRE( 1'b0 ), .Q( acia_dtack[1]) );
-	FDCP ff_acia_dtack3( .D( acia_dtack[1] ), .C( E ), .CLR( AS ), .PRE( 1'b0 ), .Q( acia_dtack[2]) );
+	FDCP ff_acia_dtack1( .D( ACIA ), .C( ~E ), .CLR( AS ), .PRE( 1'b0 ), .Q( acia_dtack[0]) ); // Processor asserts when E goes low after receiving VPA.
+																																	// Accessory waits for E to go high then presents data
+	FDCP ff_acia_dtack2( .D( acia_dtack[0] ), .C( ~E ), .CLR( AS ), .PRE( 1'b0 ), .Q( acia_dtack[1]) ); // Processor drives E low and negates AS etc, latching on the edge
+	FDCP ff_acia_dtack3( .D( acia_dtack[1] ), .C( ~E ), .CLR( AS ), .PRE( 1'b0 ), .Q( acia_dtack[2]) ); // not used
 	
 	assign VPA_EXT = ( FC0 & FC1 ) ? VPA_MB : 1'b1;
 	assign VMA_MB = acia_dtack[0] ? 1'b0 : 1'bz;
