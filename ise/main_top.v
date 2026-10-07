@@ -33,10 +33,10 @@ module main_top (
 
 	reg [3:0] state = 4'd0;
 
-	reg halt_mb_int = 1'bz;
-	reg br_i_int = 1'bz;
+	reg halt_mb_int = 1'b0;
+	reg br_i_int = 1'b0;
 	reg br_mb_int = 1'b1;
-	reg bgack_i_int = 1'bz;
+	reg bgack_i_int = 1'b0;
 	reg bgack_mb_int = 1'b1;
 
 
@@ -51,7 +51,7 @@ module main_top (
 
 	always @(posedge CLK8 or negedge RESET_MB) begin  
 		if( !RESET_MB ) begin
-			halt_mb_int <= 1'bz;
+			halt_mb_int <= 1'b1;
 			br_i_int <= 1'b0;
 			br_mb_int <= 1'b1;
 			bgack_i_int <= 1'b0;
@@ -139,10 +139,10 @@ module main_top (
 	assign CLK8_O = ~CLK8;
 
 	assign HALT_I = RESET_MB ? ( state == 'd4 ? 1'bz : 1'b0 ) : HALT_MB;
-	assign HALT_MB = ( RESET_MB ? ( ( halt_mb_int === 1'bz ) ? 1'bz : halt_mb_int ) : 1'bz );
+	assign HALT_MB = ( !RESET_MB || halt_mb_int ? 1'bz : 1'b0 );
 	assign BR_I = (state == 'd4) ? BR_MB : 1'b1;
 	assign BR_MB = br_mb_int ? 1'bz : 1'b0;
-	assign BGACK_I = ( bgack_i_int === 1'bz ) ? 1'bz : bgack_i_int;
+	assign BGACK_I = bgack_i_int ;// ? 1'bz : 1'b0;
 	assign BGACK_MB = bgack_mb_int ? 1'bz : 1'b0;
 
 // VPA hack section
