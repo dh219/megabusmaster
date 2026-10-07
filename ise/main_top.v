@@ -33,6 +33,7 @@ module main_top (
 
 	reg [3:0] state = 4'd0;
 
+	reg halt_i_int = 1'b0;
 	reg halt_mb_int = 1'b0;
 	reg br_i_int = 1'b0;
 	reg br_mb_int = 1'b1;
@@ -51,6 +52,7 @@ module main_top (
 
 	always @(posedge CLK8 or negedge RESET_MB) begin  
 		if( !RESET_MB ) begin
+			halt_i_int <= 1'b1;
 			halt_mb_int <= 1'b1;
 			br_i_int <= 1'b0;
 			br_mb_int <= 1'b1;
@@ -62,17 +64,18 @@ module main_top (
 		else begin
 			case(state)
 			  4'd0: begin // BUS NOT OURS
-				 halt_mb_int <= 1'b0;
-				 br_mb_int <= 1'b1;
-				 bgack_mb_int <= 1'b1;
+					halt_mb_int <= 1'b0;
+					br_mb_int <= 1'b1;
+					bgack_mb_int <= 1'b1;
 
-				 br_i_int <= 1'b0;
-				 bgack_i_int <= 1'b0;
+					br_i_int <= 1'b0;
+					bgack_i_int <= 1'b0;
+					halt_i_int <= 1'b0;
 
-				 if( // BR_MB
-				 ( BR_MB_D[1] ) && BGACK_MB && BG_MB ) begin
-					state <= 4'd1; // If no bus arb in play for a number of counts
-				 end
+					if( // BR_MB
+					( BR_MB_D[1] ) && BGACK_MB && BG_MB ) begin
+						state <= 4'd1; // If no bus arb in play for a number of counts
+					end
 			  end
 			
 			  4'd1: begin // START REQUEST, WAIT BG
@@ -82,6 +85,7 @@ module main_top (
 
 				 br_i_int <= 1'b0;
 				 bgack_i_int <= 1'b0;
+					halt_i_int <= 1'b0;
 
 				 if( !BG_MB && BGACK_MB && AS ) begin
 					state <= 4'd2; // If bus grant, move to accept state
@@ -96,6 +100,7 @@ module main_top (
 
 					br_i_int <= 1'b1;
 					bgack_i_int <= 1'b1;
+					halt_i_int <= 1'b0;
 
 					state <= 'd3;
 			  end		  
@@ -106,6 +111,7 @@ module main_top (
 
 					br_i_int <= 1'b1;
 					bgack_i_int <= 1'b1;
+					halt_i_int <= 1'b0;
 
 					state <= 'd4;
 			  end	
@@ -113,13 +119,16 @@ module main_top (
 					halt_mb_int <= 1'b0;
 					br_i_int <= 1'b1;
 					br_mb_int <= 1'b1;
+
 					bgack_i_int <= 1'b1;
 					bgack_mb_int <= 1'b0;
+					halt_i_int <= 1'b1;
 
 					if( AS && !BG_I ) begin
 						state <= 'd5;
 						bgack_mb_int <= 1'b1;
 						bgack_i_int <= 1'b0;
+						halt_i_int <= 1'b0;
 					end
 			  end					  
 			  4'd5: begin // RELINQUISH, AWAIT BG_MB
@@ -129,6 +138,7 @@ module main_top (
 
 					br_i_int <= 1'b0;
 					bgack_i_int <= 1'b0;
+					halt_i_int <= 1'b0;
 
 					if( !BG_MB || ( BR_MB && BG_MB && BGACK_MB ) ) begin
 						state <= 4'd0; // Back to initial state
@@ -140,7 +150,8 @@ module main_top (
 
 	assign CLK8_O = ~CLK8;
 
-	assign HALT_I = RESET_MB ? ( state == 'd4 ? 1'bz : 1'b0 ) : HALT_MB;
+//	assign HALT_I = RESET_MB ? ( state == 'd4 ? 1'bz : 1'b0 ) : HALT_MB;
+	assign HALT_I = RESET_MB ? halt_i_int : HALT_MB;
 	assign HALT_MB = ( !RESET_MB || halt_mb_int ? 1'bz : 1'b0 );
 //	assign BR_I = (state == 'd4) ? BR_MB : 1'b1;
 	assign BR_I = br_i_int ? BR_MB : 1'b0;
