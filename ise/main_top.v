@@ -153,8 +153,8 @@ module main_top (
 //	assign HALT_I = RESET_MB ? ( state == 'd4 ? 1'bz : 1'b0 ) : HALT_MB;
 	assign HALT_I = RESET_MB ? halt_i_int : HALT_MB;
 	assign HALT_MB = ( !RESET_MB || halt_mb_int ? 1'bz : 1'b0 );
-//	assign BR_I = (state == 'd4) ? BR_MB : 1'b1;
-	assign BR_I = br_i_int ? BR_MB : 1'b0;
+	assign BR_I = (state == 'd4) ? BR_MB : 1'b1;
+//	assign BR_I = br_i_int ? BR_MB : 1'b0; // this didn't work -- revise
 	assign BR_MB = br_mb_int ? 1'bz : 1'b0;
 	assign BGACK_I = bgack_i_int ;// ? 1'bz : 1'b0;
 	assign BGACK_MB = bgack_mb_int ? 1'bz : 1'b0;
@@ -165,10 +165,11 @@ module main_top (
 	wire ACIA = !VPA_MB && !(FC1 && FC0);
 
 	wire [2:0] acia_dtack;
-	FDCP ff_acia_dtack1( .D( ACIA ), .C( ~E ), .CLR( AS ), .PRE( 1'b0 ), .Q( acia_dtack[0]) ); // Processor asserts when E goes low after receiving VPA.
+	// my clever changing of E to ~E didn't work. More complicated required?
+	FDCP ff_acia_dtack1( .D( ACIA ), .C( E ), .CLR( AS ), .PRE( 1'b0 ), .Q( acia_dtack[0]) ); // Processor asserts when E goes low after receiving VPA.
 																																	// Accessory waits for E to go high then presents data
-	FDCP ff_acia_dtack2( .D( acia_dtack[0] ), .C( ~E ), .CLR( AS ), .PRE( 1'b0 ), .Q( acia_dtack[1]) ); // Processor drives E low and negates AS etc, latching on the edge
-	FDCP ff_acia_dtack3( .D( acia_dtack[1] ), .C( ~E ), .CLR( AS ), .PRE( 1'b0 ), .Q( acia_dtack[2]) ); // not used
+	FDCP ff_acia_dtack2( .D( acia_dtack[0] ), .C( E ), .CLR( AS ), .PRE( 1'b0 ), .Q( acia_dtack[1]) ); // Processor drives E low and negates AS etc, latching on the edge
+	FDCP ff_acia_dtack3( .D( acia_dtack[1] ), .C( E ), .CLR( AS ), .PRE( 1'b0 ), .Q( acia_dtack[2]) ); // not used
 	
 	assign VPA_EXT = ( FC0 & FC1 ) ? VPA_MB : 1'b1;
 	assign VMA_MB = acia_dtack[0] ? 1'b0 : 1'bz;
