@@ -116,20 +116,7 @@
   },
   "open_jobsets": [],
   "project": {
-    "files": [
-      {
-        "name": "megabusmaster.kicad_sch",
-        "open": false,
-        "window": {
-          "display": 0,
-          "maximized": false,
-          "pos_x": 117,
-          "pos_y": 0,
-          "size_x": 1226,
-          "size_y": 761
-        }
-      }
-    ]
+    "files": []
   },
   "schematic": {
     "hierarchy_collapsed": [],
