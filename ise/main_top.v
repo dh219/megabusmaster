@@ -153,7 +153,7 @@ module main_top (
 //	assign HALT_I = RESET_MB ? ( state == 'd4 ? 1'bz : 1'b0 ) : HALT_MB;
 	assign HALT_I = RESET_MB ? halt_i_int : HALT_MB;
 	assign HALT_MB = ( !RESET_MB || halt_mb_int ? 1'bz : 1'b0 );
-	assign BR_I = (state == 'd4) ? BR_MB : 1'b1;
+	assign BR_I = (state == 'd4) ? BR_MB : ( state == 'd2 || state == 'd3 ) ? 1'b 1 : 1'b0;
 //	assign BR_I = br_i_int ? BR_MB : 1'b0; // this didn't work -- revise
 	assign BR_MB = br_mb_int ? 1'bz : 1'b0;
 	assign BGACK_I = bgack_i_int ;// ? 1'bz : 1'b0;
