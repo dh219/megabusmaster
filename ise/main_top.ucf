@@ -1,32 +1,41 @@
 
 #Created by Constraints Editor (xc9572xl-vq44-10) - 2026/09/22
 NET "CLK8" TNM_NET = CLK8;
-TIMESPEC TS_CLK8 = PERIOD "CLK8" 62.5 ns HIGH 50%;
+TIMESPEC TS_CLK8 = PERIOD "CLK8" 125 ns HIGH 50%;
 
 
-NET "RESET_I" LOC = "P39" ;
+NET "CLK8"  LOC = "P43" | BUFG=CLK ; 
+NET "CLK8_O"  LOC = "P42" ; 
 
-NET "CLK8"  LOC = "P44" | BUFG=CLK ; 
-NET "CLK8_O"  LOC = "P43" ; 
+NET "RESET_MB" LOC = "P33" ;
+NET "HALT_MB" LOC = "P5" ;
+NET "BR_MB" LOC = "P6" ;
+NET "BGACK_MB" LOC = "P7" ;
+NET "BG_MB" LOC = "P8" ;
+NET "DTACKM" LOC = "P13" ;
+NET "VPA_MB" LOC = "P2" ;
+NET "VMA_MB" LOC = "P3" ;
+NET "ASM" LOC = "P12" ;
 
-NET "RESET_MB" LOC = "P29" ;
-NET "HALT_MB" LOC = "P30" ;
-NET "BR_MB" LOC = "P31" ;
-NET "BGACK_MB" LOC = "P32" ;
-NET "BG_MB" LOC = "P33" ;
-NET "BG_I" LOC = "P34" ;
-NET "BGACK_I" LOC = "P36" ;
-NET "BR_I" LOC = "P37" ;
-NET "HALT_I" LOC = "P38" ;
+NET "BG_I" LOC = "P14" ;
+NET "BGACK_I" LOC = "P16" ;
+NET "BR_I" LOC = "P18" ;
+NET "HALT_I" LOC = "P19" ;
+NET "VPA_EXT" LOC = "P20" ;
+NET "DTACK" LOC = "P23" ;
+NET "AS_I" LOC = "P27" ;
 
+NET "FC0" LOC = "P22" ;
+NET "FC1" LOC = "P21" ;
+NET "E" LOC = "P1" ;
 
-NET "AS" LOC = "P1" ;
-
-NET "FC0" LOC = "P7" ;
-NET "FC1" LOC = "P8" ;
-NET "E" LOC = "P19" ;
-NET "VPA_MB" LOC = "P22" ;
-NET "VMA_MB" LOC = "P14" ;
-NET "DTACK" LOC = "P12" ;
-NET "VPA_EXT" LOC = "P3" ;
+NET "OSC" LOC = "P44" | BUFG=CLK ;
+NET "CONFIGS<0>" LOC = "P29" ;
+NET "CONFIGS<1>" LOC = "P30" ;
+NET "CONFIGS<2>" LOC = "P31" ;
+NET "CONFIGS<3>" LOC = "P32" ;
+NET "SPARE<0>" LOC = "P34" ;
+NET "SPARE<1>" LOC = "P36" ;
+NET "SPARE<2>" LOC = "P37" ;
+NET "ISOLATE" LOC = "P38" ;
 
